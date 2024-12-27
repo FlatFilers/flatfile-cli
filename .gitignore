@@ -1,0 +1,45 @@
+# Deno specific
+.deno/
+*.orig
+*.pyc
+*.swp
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE specific
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Coverage and test reports
+coverage/
+.nyc_output/
+
+# OS specific
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# Build output
+dist/
+build/
+
+# Lock files (except deno.lock)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+!deno.lock
+
+# Cache directories
+.cache/
+.npm/
