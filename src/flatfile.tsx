@@ -1,4 +1,4 @@
-import Pastel from "npm:pastel";
+import Pastel from "pastel";
 
 const app = new Pastel({
   importMeta: import.meta as any,

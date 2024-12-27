@@ -1,7 +1,7 @@
-import React from "npm:react";
-import { Box, Text } from "npm:ink";
-import Command from "npm:pastel";
-import Spinner from "npm:ink-spinner";
+import React from "react";
+import { Box, Text } from "ink";
+import Command from "pastel";
+import Spinner from "ink-spinner";
 
 interface ListOptions {
   token?: string;

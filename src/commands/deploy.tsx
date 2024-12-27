@@ -1,51 +1,129 @@
-import React from "npm:react";
-import { Box, Text } from "npm:ink";
-import Command from "npm:pastel";
-import Spinner from "npm:ink-spinner";
+import { useEffect, useState } from "react";
+import { Box, Text, useApp } from "ink";
+import { argument } from "pastel";
+import zod from "zod";
+import { Spinner } from "../components/Spinner.tsx";
+import { AgentInfo } from "../components/AgentInfo.tsx";
+import { getConfig, debug } from "../utils/config.ts";
 
-interface DeployOptions {
-  slug?: string;
-  topics?: string;
-  token?: string;
-  verbose?: boolean;
-  apiUrl?: string;
-}
+export const options = zod.object({
+  slug: zod.string().optional().describe("The slug of the project to deploy"),
+  topics: zod.string().optional().describe("List of topics to listen on"),
+  token: zod.string().optional().describe("The authentication token to use"),
+  verbose: zod.boolean().optional().describe("Enable verbose logging"),
+  apiUrl: zod.string().optional().describe("The API URL to use"),
+});
+export const args = zod.tuple([
+  zod.string().describe(
+    argument({
+      name: "file",
+      description: "The path to the file to deploy",
+    })
+  ),
+]);
 
-export default class DeployCommand extends Command {
-  static path = ["deploy"];
-  static description = "Deploy your project as a Flatfile Agent";
-  static options = {
-    "--slug, -s":
-      "The slug of the project to deploy (or set env FLATFILE_AGENT_SLUG)",
-    "--topics, -t":
-      "List of topics to listen on (eg: 'commit:created,commit:updated')",
-    "--token, -k":
-      "The authentication token to use (or set env FLATFILE_API_KEY)",
-    "--verbose, -v": "Enable verbose logging",
-    "--api-url": "The API URL to use (or set env FLATFILE_API_URL)",
-  };
+type Props = {
+  options: zod.infer<typeof options>;
+  args: zod.infer<typeof args>;
+};
 
-  async execute(options: DeployOptions, file?: string) {
-    return (
-      <Box flexDirection="column">
-        <Box>
-          <Text>
-            <Text color="green">
-              <Spinner type="dots" />
-            </Text>
-            {" Deploying agent..."}
-          </Text>
+type DeployState =
+  | { status: "initializing" }
+  | { status: "building" }
+  | { status: "validating" }
+  | { status: "deploying" }
+  | { status: "success"; agentId: string; slug: string }
+  | { status: "error"; message: string };
+
+export default function Deploy({ options, args }: Props) {
+  const { exit } = useApp();
+  const [file] = args;
+  const [state, setState] = useState<DeployState>({ status: "initializing" });
+
+  // const [existingAgents, setExistingAgents] = useState<
+  //   Array<{ id: string; slug: string }>
+  // >([]);
+
+  useEffect(() => {
+    async function deploy() {
+      try {
+        const config = getConfig(options);
+        debug("Starting deployment", { file, config });
+
+        // Build phase
+        setState({ status: "building" });
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated build
+
+        // Validate phase
+        setState({ status: "validating" });
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated validation
+
+        // Deploy phase
+        setState({ status: "deploying" });
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated deployment
+
+        // Success
+        setState({
+          status: "success",
+          agentId: "agent_123", // Replace with actual agent ID
+          slug: options.slug || "default-agent",
+        });
+
+        // Exit after success
+        setTimeout(() => exit(), 1000);
+      } catch (error) {
+        setState({
+          status: "error",
+          message:
+            error instanceof Error ? error.message : "Unknown error occurred",
+        });
+      }
+    }
+
+    void deploy();
+  }, []);
+
+  return (
+    <Box flexDirection="column">
+      {state.status === "initializing" && (
+        <Spinner text="Initializing deployment..." />
+      )}
+
+      {state.status === "building" && (
+        <Spinner text="Building deployable package..." />
+      )}
+
+      {state.status === "validating" && (
+        <Spinner text="Validating package..." />
+      )}
+
+      {state.status === "deploying" && (
+        <Spinner text="Deploying to Flatfile..." />
+      )}
+
+      {state.status === "success" && (
+        <Box flexDirection="column">
+          <Text color="green">✓ Deployment successful!</Text>
+          <AgentInfo
+            agents={[
+              {
+                id: state.agentId,
+                slug: state.slug,
+              },
+            ]}
+          />
         </Box>
+      )}
+
+      {state.status === "error" && (
+        <Text color="red">Error: {state.message}</Text>
+      )}
+
+      {file && (
         <Box marginTop={1}>
-          <Text>{file ? `File: ${file}` : "No file specified"}</Text>
+          <Text>File: {file}</Text>
         </Box>
-        {options.slug && (
-          <Box>
-            <Text>Slug: {options.slug}</Text>
-          </Box>
-        )}
-        {/* TODO: Implement actual deployment logic */}
-      </Box>
-    );
-  }
+      )}
+    </Box>
+  );
 }

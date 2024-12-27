@@ -1,5 +1,5 @@
-import React from "npm:react@18";
-import { Box } from "npm:ink@5";
+import React from "react@18";
+import { Box } from "ink@5";
 import { Hello } from "../commands/hello.tsx";
 import { List } from "./list.tsx";
 

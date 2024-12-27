@@ -1,5 +1,5 @@
-import React from "npm:react@18";
-import { Text, Box } from "npm:ink@5";
+import React from "react@18";
+import { Text, Box } from "ink@5";
 
 interface ListProps {
   type: string;

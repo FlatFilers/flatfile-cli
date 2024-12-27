@@ -1,7 +1,7 @@
-import React from "npm:react";
-import { Box, Text } from "npm:ink";
-import Spinner from "npm:ink-spinner";
-import zod from "npm:zod";
+import React from "react";
+import { Box, Text } from "ink";
+import Spinner from "ink-spinner";
+import zod from "zod";
 
 export const options = zod.object({
   slug: zod.string().optional().describe("The slug of the agent to delete"),

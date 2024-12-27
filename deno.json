@@ -13,8 +13,11 @@
     ]
   },
   "imports": {
+    "ink-spinner": "npm:ink-spinner@^5.0.0",
     "react": "npm:react@18",
     "ink": "npm:ink@5",
-    "commander": "npm:commander@11"
+    "commander": "npm:commander@11",
+    "pastel": "npm:pastel@3.0.0",
+    "zod": "npm:zod@^3.24.1"
   }
 }
