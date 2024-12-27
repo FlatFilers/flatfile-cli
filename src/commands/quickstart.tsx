@@ -1,44 +1,39 @@
 import React from "npm:react";
 import { Box, Text } from "npm:ink";
-import Command from "npm:pastel";
 import Spinner from "npm:ink-spinner";
+import zod from "npm:zod";
 
-interface QuickstartOptions {
-  team?: string;
-  apiUrl?: string;
-}
+export const options = zod.object({
+  team: zod.string().optional().describe("The Team ID to publish to"),
+  apiUrl: zod.string().optional().describe("The API URL to use"),
+});
 
-export default class QuickstartCommand extends Command {
-  static path = ["quickstart"];
-  static description = "Initialize a quickstart Workbook";
-  static options = {
-    "--team, -t": "The Team ID to publish to",
-    "--api-url": "The API URL to use",
-  };
+type Props = {
+  options: zod.infer<typeof options>;
+};
 
-  async execute(options: QuickstartOptions) {
-    return (
-      <Box flexDirection="column">
-        <Box>
-          <Text>
-            <Text color="green">
-              <Spinner type="dots" />
-            </Text>
-            {" Creating quickstart workbook..."}
+export default function Quickstart({ options }: Props) {
+  return (
+    <Box flexDirection="column">
+      <Box>
+        <Text>
+          <Text color="green">
+            <Spinner type="dots" />
           </Text>
-        </Box>
-        {options.team && (
-          <Box marginTop={1}>
-            <Text>Team ID: {options.team}</Text>
-          </Box>
-        )}
-        <Box marginTop={1}>
-          <Text color="yellow">
-            This will create a new workbook with sample configurations
-          </Text>
-        </Box>
-        {/* TODO: Implement quickstart workbook creation logic */}
+          {" Creating quickstart workbook..."}
+        </Text>
       </Box>
-    );
-  }
+      {options.team && (
+        <Box marginTop={1}>
+          <Text>Team ID: {options.team}</Text>
+        </Box>
+      )}
+      <Box marginTop={1}>
+        <Text color="yellow">
+          This will create a new workbook with sample configurations
+        </Text>
+      </Box>
+      {/* TODO: Implement quickstart workbook creation logic */}
+    </Box>
+  );
 }

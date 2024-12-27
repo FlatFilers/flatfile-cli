@@ -19,6 +19,9 @@
     - /types (TypeScript interfaces/types)
     - flatfile.tsx (main entry point)
 
+## Pastel
+Pastel will autodiscover commands in the ./commands folder. You should not register commands to the main flatfile.tsx file.
+
 ## Naming Conventions
 - Use PascalCase for Ink components
 - Use camelCase for functions and variables
